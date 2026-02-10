@@ -21,6 +21,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'role',
+        'license_number',
+        'approved_at',
+        'approved_by',
+        'verified',
     ];
 
     /**
@@ -43,6 +49,44 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'approved_at' => 'datetime',
+            'verified' => 'boolean',
         ];
+    }
+
+    // Relationships
+
+    // Chauffeur has taxis
+    public function taxis()
+    {
+        return $this->hasMany(Taxi::class);
+    }
+
+    // Chauffeur has created trips
+    public function driverTrips()
+    {
+        return $this->hasMany(Trip::class, 'cheffeur_id');
+    }
+
+    // Voyageur makes reservations
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    // Helper methods
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isChauffeur()
+    {
+        return $this->role === 'cheffeur';
+    }
+
+    public function isVoyageur()
+    {
+        return $this->role === 'voyageur';
     }
 }
