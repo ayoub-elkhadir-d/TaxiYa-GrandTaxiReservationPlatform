@@ -72,16 +72,28 @@
             </a>
 
             <div class="hidden md:flex items-center gap-8">
-                <a href="traveler/search.blade.php"
+                <a href="{{ route('home') }}"
                    class="text-gray-700 hover:text-primary font-medium transition-colors">Search Rides</a>
                 <a href="#how-it-works" class="text-gray-700 hover:text-primary font-medium transition-colors">How It
                     Works</a>
-                <a href="auth/login.html"
-                   class="px-5 py-2.5 text-gray-700 font-semibold hover:text-primary transition-colors">Login</a>
-                <a href="auth/register.html"
-                   class="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-primary/30">
-                    Sign Up
-                </a>
+                @auth
+                    <a href="{{ route('dashboard') }}"
+                       class="text-gray-700 hover:text-primary font-medium transition-colors">Dashboard</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="px-6 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-all shadow-lg shadow-red-200">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="px-5 py-2.5 text-gray-700 font-semibold hover:text-primary transition-colors">Login</a>
+                    <a href="{{ route('register') }}"
+                       class="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-primary/30">
+                        Sign Up
+                    </a>
+                @endauth
             </div>
         </div>
     </div>
@@ -313,14 +325,21 @@
             Optimize your earnings, reduce waiting time, and manage your schedule efficiently
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="driver/register.html"
-               class="px-10 py-4 bg-dark text-white font-bold rounded-xl hover:bg-gray-800 transition-all shadow-xl text-lg">
-                Register as Driver
-            </a>
-            <a href="driver/login.html"
-               class="px-10 py-4 bg-white text-dark font-bold rounded-xl hover:bg-gray-100 transition-all shadow-xl text-lg">
-                Driver Login
-            </a>
+            @guest
+                <a href="{{ route('register') }}"
+                   class="px-10 py-4 bg-dark text-white font-bold rounded-xl hover:bg-gray-800 transition-all shadow-xl text-lg">
+                    Register as Driver
+                </a>
+                <a href="{{ route('login') }}"
+                   class="px-10 py-4 bg-white text-dark font-bold rounded-xl hover:bg-gray-100 transition-all shadow-xl text-lg">
+                    Driver Login
+                </a>
+            @else
+                <a href="{{ route('dashboard') }}"
+                   class="px-10 py-4 bg-dark text-white font-bold rounded-xl hover:bg-gray-800 transition-all shadow-xl text-lg">
+                    Go to Dashboard
+                </a>
+            @endguest
         </div>
     </div>
 </section>
@@ -356,10 +375,14 @@
             <div>
                 <h4 class="font-bold mb-4">For Drivers</h4>
                 <ul class="space-y-2">
-                    <li><a href="driver/register.html" class="text-gray-400 hover:text-white transition-colors">Become a
-                            Driver</a></li>
-                    <li><a href="driver/login.html" class="text-gray-400 hover:text-white transition-colors">Driver
-                            Login</a></li>
+                    @guest
+                        <li><a href="{{ route('register') }}" class="text-gray-400 hover:text-white transition-colors">Become a
+                                Driver</a></li>
+                        <li><a href="{{ route('login') }}" class="text-gray-400 hover:text-white transition-colors">Driver
+                                Login</a></li>
+                    @else
+                        <li><a href="{{ route('dashboard') }}" class="text-gray-400 hover:text-white transition-colors">Dashboard</a></li>
+                    @endguest
                     <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Driver Benefits</a></li>
                 </ul>
             </div>
