@@ -74,7 +74,9 @@
 <!-- Search Bar -->
 <section class="bg-white border-b shadow-sm sticky top-16 z-40">
     <div class="max-w-7xl mx-auto px-6 py-4">
-        <form class="flex gap-4" action="#" method="post">
+       <form class="flex gap-4" action="{{ route('search') }}" method="POST">
+        @csrf
+
             <div class="flex-1">
                 <select name="from"
                         class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none bg-white">
