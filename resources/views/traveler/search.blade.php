@@ -46,7 +46,6 @@
             <div class="flex items-center gap-6">
                 <a href="search.html" class="text-primary font-semibold">Search</a>
                 <a href="#" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
-                <!-- <h1>{{$R}}</h1> -->
                 <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">A
                 </div>
             </div>

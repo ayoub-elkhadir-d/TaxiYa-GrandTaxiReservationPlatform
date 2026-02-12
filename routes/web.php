@@ -11,9 +11,9 @@ Route::get('/', [SearchController::class, 'index'])->name('home');
 
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
-Route::get('/search', function () {
-    return view('traveler.search');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/search', [SearchController::class, 'showSearchPage'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::get('/driver/dashboard', [DriverController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])

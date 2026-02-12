@@ -18,8 +18,23 @@ class SearchController extends Controller
 
 
     public function index(){
+        // Check if user is authenticated and is a driver
+        if (auth()->check() && auth()->user()->isChauffeur()) {
+            // Check if driver is verified
+            if (auth()->user()->verified || auth()->user()->approved_at) {
+                return redirect()->route('driver.dashboard');
+            }
+            return redirect()->route('driver.pending');
+        }
+        
         $cities = City::all();
         return view('home', compact('cities'));
+    }
+
+    public function showSearchPage(){
+        $cities = City::all();
+        $result = collect(); // Empty collection for initial page load
+        return view('traveler.search', compact('cities', 'result'));
     }
 
         public function search(Request $R){
