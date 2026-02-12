@@ -46,6 +46,8 @@
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}" class="text-primary font-semibold">Search</a>
                 <a href="{{ route('mybookings') }}" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
+                
+                @auth
                 <div class="flex items-center gap-3 pl-4 border-l border-gray-100">
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
@@ -57,6 +59,9 @@
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                 </div>
+                @else
+                    <a href="{{ route('login') }}" class="px-6 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all">Login</a>
+                @endauth
             </div>
         </div>
     </div>
@@ -124,8 +129,8 @@
                         <p class="text-gray-600 flex items-center gap-2">
                             <span class="font-bold text-primary">{{ $result->count() }}</span> rides found 
                             @if(request('from') && request('to'))
-                                from <span class="font-semibold text-dark">{{ $cities->find(request('from'))->name ?? 'Unknown' }}</span> 
-                                to <span class="font-semibold text-dark">{{ $cities->find(request('to'))->name ?? 'Unknown' }}</span>
+                                from <span class="font-semibold text-dark">{{ $cities->find(request('from'))?->name ?? 'Unknown' }}</span> 
+                                to <span class="font-semibold text-dark">{{ $cities->find(request('to'))?->name ?? 'Unknown' }}</span>
                             @endif
                             @if(request('date'))
                                 on <span class="font-semibold text-dark">{{ \Carbon\Carbon::parse(request('date'))->format('M d, Y') }}</span>

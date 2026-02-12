@@ -60,6 +60,7 @@
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-primary font-medium transition-colors">Search</a>
                 <a href="{{ route('mybookings') }}" class="text-primary font-bold">My Bookings</a>
+                @auth
                 <div class="flex items-center gap-3 pl-6 border-l border-gray-200">
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
@@ -71,6 +72,9 @@
                         {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                 </div>
+                @else
+                <a href="{{ route('login') }}" class="px-6 py-2 bg-primary text-white font-bold rounded-lg hover:bg-blue-700 transition-all">Login</a>
+                @endauth
             </div>
         </div>
     </div>
