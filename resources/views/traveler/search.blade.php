@@ -46,8 +46,16 @@
             <div class="flex items-center gap-6">
                 <a href="{{ route('dashboard') }}" class="text-primary font-semibold">Search</a>
                 <a href="{{ route('mybookings') }}" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
-                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
-                    {{ substr(auth()->user()->name, 0, 1) }}
+                <div class="flex items-center gap-3 pl-4 border-l border-gray-100">
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="text-sm font-semibold text-red-500 hover:text-red-700 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
                 </div>
             </div>
         </div>
