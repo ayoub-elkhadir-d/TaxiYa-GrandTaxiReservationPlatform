@@ -167,13 +167,15 @@
 
             <!-- Results List -->
             <div class="md:col-span-3">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-black text-dark mb-2">Available Rides</h2>
-                    <p class="text-gray-600">12 rides found from Casablanca to Marrakech on Feb 15, 2026</p>
-                </div>
+              <p class="text-gray-600">
+    {{ $result->count() }} rides found
+            </p>
+
 
                 <div class="space-y-6">
                     <!-- Ride Card 1 -->
+
+                    @foreach($result as $trip)
                     <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all border-2 border-transparent hover:border-primary">
                         <div class="flex justify-between items-start mb-4">
                             <div>
@@ -186,11 +188,11 @@
                                         <span class="text-sm font-semibold">4.8</span>
                                     </div>
                                 </div>
-                                <h3 class="font-bold text-lg text-dark">Mohamed El Fassi</h3>
+                                <h3 class="font-bold text-lg text-dark">{{ $trip->price_per_seat }}</h3>
                                 <p class="text-sm text-gray-600">White Mercedes - ABC 12345</p>
                             </div>
                             <div class="text-right">
-                                <div class="text-3xl font-black text-primary">100 MAD</div>
+                                <div class="text-3xl font-black text-primary">{{ $trip->price_per_seat }} MAD</div>
                                 <div class="text-sm text-gray-600">per seat</div>
                             </div>
                         </div>
@@ -294,6 +296,25 @@
                             </button>
                         </div>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
 
                     <!-- More ride cards would go here... -->
                     <div class="bg-white rounded-2xl p-6 shadow-lg">
