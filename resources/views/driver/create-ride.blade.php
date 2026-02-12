@@ -69,7 +69,7 @@
             <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-full uppercase tracking-widest">New Journey</span>
         </div>
         <h1 class="text-4xl font-black mb-2">Publish a Ride</h1>
-        <p class="text-blue-100 italic">Fill in the details below to find passengers for your next trip.</p>
+        <p class="text-blue-100 italic">Set your route and adjust your price if needed.</p>
     </div>
 </section>
 
@@ -81,19 +81,16 @@
                 <form action="{{ route('rides.store') }}" method="POST" class="bg-white rounded-3xl shadow-xl p-8 space-y-8 border border-gray-100">
                     @csrf
                     
+                    <input type="hidden" name="available_seats" id="inputSeats" value="{{ $seats ?? 6 }}">
+                    <input type="hidden" name="distance" id="inputDistance" value="{{ $distance ?? 0 }}">
+
                     <div>
                         <h3 class="text-lg font-bold text-dark mb-6 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-secondary text-dark flex items-center justify-center font-black shadow-lg shadow-secondary/30">1</div>
-                            Route Selection
+                            Route & Time
                         </h3>
 
-                        <div class="grid md:grid-cols-2 gap-8 relative">
-                            <div class="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                                <div class="w-10 h-10 bg-gray-50 rounded-full border-2 border-gray-100 flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                                </div>
-                            </div>
-
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
                             <div class="space-y-2">
                                 <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Departure City</label>
                                 <select name="departure_city_id" id="inputFrom" required onchange="updatePreview()"
@@ -116,6 +113,11 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="space-y-2 max-w-md">
+                            <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Departure Date & Time</label>
+                            <input type="datetime-local" name="departure_date" id="inputDate" required class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
+                        </div>
                     </div>
 
                     <hr class="border-gray-50">
@@ -123,51 +125,28 @@
                     <div>
                         <h3 class="text-lg font-bold text-dark mb-6 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-secondary text-dark flex items-center justify-center font-black shadow-lg shadow-secondary/30">2</div>
-                            Travel Schedule
-                        </h3>
-
-                        <div class="grid md:grid-cols-3 gap-6">
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Date & Time</label>
-                                <input type="datetime-local" name="departure_date" id="inputDate" required class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Available Seats</label>
-                                <div class="relative">
-                                    <input type="number" name="available_seats" id="inputSeats" value="4" min="1" max="8" class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-bold" oninput="updatePreview()">
-                                    <svg class="w-5 h-5 text-gray-400 absolute right-4 top-4.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
-                                </div>
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Est. Distance (km)</label>
-                                <input type="number" name="distance" id="inputDistance" placeholder="240" class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-primary outline-none bg-gray-50/50 font-medium" oninput="updatePreview()">
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr class="border-gray-50">
-
-                    <div>
-                        <h3 class="text-lg font-bold text-dark mb-6 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-secondary text-dark flex items-center justify-center font-black shadow-lg shadow-secondary/30">3</div>
                             Pricing Strategy
                         </h3>
 
                         <div class="flex flex-col md:flex-row gap-8 items-stretch">
                             <div class="w-full md:w-1/2 space-y-2">
-                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Price per Seat</label>
+                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Price per Seat (Adjustable)</label>
                                 <div class="relative">
-                                    <input type="number" name="price_per_seat" id="inputPrice" value="100" min="20" class="w-full pl-6 pr-16 py-5 border-2 border-primary/20 rounded-2xl focus:border-primary outline-none font-black text-2xl text-primary bg-blue-50/30" oninput="updatePreview()">
+                                    <input type="number" name="price_per_seat" id="inputPrice" 
+                                           value="{{ $price ?? 120 }}" 
+                                           min="10"
+                                           required
+                                           class="w-full pl-6 pr-16 py-5 border-2 border-primary/20 rounded-2xl focus:border-primary focus:bg-white transition-all text-2xl font-black text-primary bg-blue-50/30 outline-none"
+                                           oninput="updatePreview()">
                                     <div class="absolute right-6 top-5 text-primary font-black">MAD</div>
                                 </div>
+                                <p class="text-[10px] text-gray-400 italic mt-1 font-medium">We've suggested a price, but you can set your own.</p>
                             </div>
 
-                            <div class="w-full md:w-1/2 bg-gradient-to-br from-primary to-blue-800 rounded-2xl p-6 text-white shadow-xl shadow-primary/20 flex flex-col justify-center">
-                                <span class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Total Potential Earnings</span>
-                                <div class="text-4xl font-black" id="totalEarnings">400 MAD</div>
-                                <div class="text-[10px] text-blue-200 mt-2 opacity-80 italic">* Based on full vehicle occupancy</div>
+                            <div class="w-full md:w-1/2 bg-gradient-to-br from-primary to-blue-800 rounded-3xl p-6 text-white shadow-xl shadow-primary/20 flex flex-col justify-center border border-white/10">
+                                <span class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Potential Earnings</span>
+                                <div class="text-4xl font-black" id="totalEarnings">0 MAD</div>
+                                <div class="text-[10px] text-blue-200 mt-2 opacity-80 italic">* Total for {{ $seats ?? 6 }} seats</div>
                             </div>
                         </div>
                     </div>
@@ -175,7 +154,7 @@
                     <div class="pt-6">
                         <button type="submit" class="w-full py-5 bg-primary text-white font-black text-lg rounded-2xl hover:bg-blue-800 transition-all shadow-xl shadow-primary/30 transform active:scale-[0.98] flex items-center justify-center gap-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
-                            PUBLISH RIDE NOW
+                            PUBLISH RIDE
                         </button>
                     </div>
                 </form>
@@ -185,7 +164,7 @@
                 <div class="sticky top-28">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-                        <h3 class="font-bold text-gray-400 text-xs uppercase tracking-widest">Live Traveler Preview</h3>
+                        <h3 class="font-bold text-gray-400 text-xs uppercase tracking-widest">Live Preview</h3>
                     </div>
                     
                     <div class="bg-white rounded-3xl p-6 shadow-2xl border-2 border-primary/5">
@@ -196,50 +175,33 @@
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-dark">{{ auth()->user()->name }}</h3>
-                                    <div class="flex text-secondary text-xs">★★★★★ <span class="text-gray-400 ml-1">(4.8)</span></div>
+                                    <div class="flex text-secondary text-[10px]">★★★★★</div>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-2xl font-black text-primary" id="previewPrice">100 MAD</div>
+                                <div class="text-2xl font-black text-primary" id="previewPrice">{{ $price ?? 120 }} MAD</div>
                                 <div class="text-[10px] text-gray-400 uppercase font-bold">per seat</div>
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 rounded-2xl p-4 space-y-4 border border-gray-100">
+                        <div class="bg-gray-50 rounded-2xl p-4 space-y-4 border border-gray-100 mb-6">
                             <div class="relative pl-6 border-l-2 border-dashed border-primary/30 space-y-6">
                                 <div class="relative">
                                     <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white"></div>
-                                    <div class="text-[10px] text-gray-400 font-bold uppercase">Departure</div>
                                     <div class="font-bold text-dark" id="previewFrom">---</div>
                                     <div class="text-xs text-primary font-medium" id="previewTime">--:--</div>
                                 </div>
                                 <div class="relative">
                                     <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-secondary border-4 border-white"></div>
-                                    <div class="text-[10px] text-gray-400 font-bold uppercase">Destination</div>
                                     <div class="font-bold text-dark" id="previewTo">---</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-6">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-xs font-bold text-gray-500 uppercase">Available Space</span>
-                                <span class="text-accent font-black text-xs" id="previewSeats">4 Seats</span>
-                            </div>
-                            <div class="flex gap-1.5">
-                                <div class="h-1.5 flex-1 bg-primary rounded-full"></div>
-                                <div class="h-1.5 flex-1 bg-gray-100 rounded-full"></div>
-                                <div class="h-1.5 flex-1 bg-gray-100 rounded-full"></div>
-                                <div class="h-1.5 flex-1 bg-gray-100 rounded-full"></div>
-                                <div class="h-1.5 flex-1 bg-gray-100 rounded-full"></div>
-                            </div>
+                        <div class="flex justify-between items-center px-2">
+                             <span class="text-xs font-bold text-gray-500 uppercase">Available</span>
+                             <span class="text-accent font-black text-xs">{{ $seats ?? 6 }} Seats</span>
                         </div>
-                    </div>
-
-                    <div class="mt-6 p-4 bg-secondary/10 rounded-2xl border border-secondary/20">
-                        <p class="text-[11px] text-amber-800 leading-relaxed font-medium">
-                            <span class="font-bold">💡 Driver Tip:</span> Rides with prices between 80-120 MAD for this route usually fill up in less than 2 hours.
-                        </p>
                     </div>
                 </div>
             </div>
@@ -249,25 +211,32 @@
 
 <script>
     function updatePreview() {
+        // Elements
         const fromSelect = document.getElementById('inputFrom');
         const toSelect = document.getElementById('inputTo');
+        const priceInput = document.getElementById('inputPrice');
+        const seatsInput = document.getElementById('inputSeats');
         
+        // Values
         const fromName = fromSelect.options[fromSelect.selectedIndex]?.getAttribute('data-name') || '---';
         const toName = toSelect.options[toSelect.selectedIndex]?.getAttribute('data-name') || '---';
         
         const dateTime = document.getElementById('inputDate').value;
         const time = dateTime ? new Date(dateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
         
-        const price = parseInt(document.getElementById('inputPrice').value) || 0;
-        const seats = parseInt(document.getElementById('inputSeats').value) || 0;
+        const price = parseInt(priceInput.value) || 0;
+        const seats = parseInt(seatsInput.value) || 0;
 
+        // Update UI
         document.getElementById('previewFrom').textContent = fromName;
         document.getElementById('previewTo').textContent = toName;
         document.getElementById('previewTime').textContent = time;
         document.getElementById('previewPrice').textContent = price + ' MAD';
-        document.getElementById('previewSeats').textContent = seats + ' Seats';
         document.getElementById('totalEarnings').textContent = (price * seats) + ' MAD';
     }
+
+    // Initialize on load to show controller defaults
+    window.onload = updatePreview;
 </script>
 </body>
 </html>
