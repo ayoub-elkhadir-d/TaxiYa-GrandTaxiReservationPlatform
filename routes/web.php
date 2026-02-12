@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\RideController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SearchController;
+
 
 
 
@@ -11,8 +12,11 @@ Route::get('/', [SearchController::class, 'index'])->name('home');
 Route::post('/search', [SearchController::class, 'search'])->name('search');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('driver.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/dashboard/createRide', [RideController::class, 'search'])->name('dashboard.create');
+Route::get('/dashboard/storeseRide', [RideController::class, 'index'])->name('rides.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
