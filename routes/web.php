@@ -16,11 +16,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard dyal Driver
     Route::get('/driver/dashboard', [DriverController::class, 'dashboard'])->name('driver.dashboard');
 
-    // Create Ride (L-khedma li drna daba)
     Route::get('/dashboard/createRide', [RideController::class, 'create'])->name('driver.create');
     Route::post('/dashboard/storeRide', [RideController::class, 'store'])->name('rides.store');
 
-    // Search Page (mn GitHub)
     Route::get('/search', [SearchController::class, 'showSearchPage'])->name('dashboard');
 });
 
@@ -36,3 +34,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
