@@ -46,6 +46,7 @@
             <div class="flex items-center gap-6">
                 <a href="search.html" class="text-primary font-semibold">Search</a>
                 <a href="#" class="text-gray-700 hover:text-primary font-medium">My Bookings</a>
+                <!-- <h1>{{$R}}</h1> -->
                 <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">A
                 </div>
             </div>
@@ -76,7 +77,7 @@
                 </select>
             </div>
             <div class="flex-1">
-                <input type="date" value="2026-02-15"
+                <input type="date" value="" name ="date"
                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none">
             </div>
             <button type="submit"
@@ -154,7 +155,7 @@
                         </div>
                         <div class="text-center">
                             <div class="text-xs text-gray-600 mb-1">Duration</div>
-                            <div class="font-bold text-dark">{{ sprintf('%02d:%02d', $hourariv  - $hour , $minute) }} H</div>
+                            <div class="font-bold text-dark">{{$hourariv-$hour}} H</div>
                         </div>
                         <div class="text-center border-l border-gray-200">
                             <div class="text-xs text-gray-600 mb-1">Distance</div>
