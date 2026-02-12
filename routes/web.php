@@ -25,7 +25,7 @@ Route::get('/driver/pending', function () {
 })->middleware(['auth'])->name('driver.pending');
 
 Route::middleware('auth')->group(function () {
-    Route::view('mybookings', 'traveler.mybookings')->name('mybookings');
+    Route::get('mybookings', [ReserveController::class, 'myBookings'])->name('mybookings');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
