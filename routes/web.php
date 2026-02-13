@@ -60,6 +60,7 @@ Route::middleware(['auth','verified'])->name('admin.')->group(function () {
     Route::get('/travelers', [AdminController::class,'travelers'])->name('travelers');
 
     Route::get('/rides', [AdminController::class,'rides'])->name('rides');
+    Route::get('/rides/{id}', [AdminController::class,'reservations'])->name('reservations');
 
 });
 require __DIR__ . '/auth.php';
