@@ -69,7 +69,7 @@
             <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold rounded-full uppercase tracking-widest">New Journey</span>
         </div>
         <h1 class="text-4xl font-black mb-2">Publish a Ride</h1>
-        <p class="text-blue-100 italic">Set your route and adjust your price if needed.</p>
+        <p class="text-blue-100 italic">Quickly publish your ride. Seats and price are optimized for your route.</p>
     </div>
 </section>
 
@@ -125,35 +125,33 @@
                     <div>
                         <h3 class="text-lg font-bold text-dark mb-6 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-secondary text-dark flex items-center justify-center font-black shadow-lg shadow-secondary/30">2</div>
-                            Pricing Strategy
+                            Dynamic Pricing
                         </h3>
 
                         <div class="flex flex-col md:flex-row gap-8 items-stretch">
                             <div class="w-full md:w-1/2 space-y-2">
-                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Price per Seat (Adjustable)</label>
+                                <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Fixed Price per Seat</label>
                                 <div class="relative">
                                     <input type="number" name="price_per_seat" id="inputPrice" 
                                            value="{{ $price ?? 120 }}" 
-                                           min="10"
-                                           required
-                                           class="w-full pl-6 pr-16 py-5 border-2 border-primary/20 rounded-2xl focus:border-primary focus:bg-white transition-all text-2xl font-black text-primary bg-blue-50/30 outline-none"
-                                           oninput="updatePreview()">
-                                    <div class="absolute right-6 top-5 text-primary font-black">MAD</div>
+                                           readonly 
+                                           class="w-full pl-6 pr-16 py-5 border-2 border-primary/10 rounded-2xl bg-gray-50 text-2xl font-black text-primary outline-none cursor-not-allowed">
+                                    <div class="absolute right-6 top-5 text-primary font-black opacity-50">MAD</div>
                                 </div>
-                                <p class="text-[10px] text-gray-400 italic mt-1 font-medium">We've suggested a price, but you can set your own.</p>
+                                <p class="text-[10px] text-gray-400 italic mt-1 font-medium">Standard price calculated based on distance and vehicle type.</p>
                             </div>
 
                             <div class="w-full md:w-1/2 bg-gradient-to-br from-primary to-blue-800 rounded-3xl p-6 text-white shadow-xl shadow-primary/20 flex flex-col justify-center border border-white/10">
-                                <span class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Potential Earnings</span>
-                                <div class="text-4xl font-black" id="totalEarnings">0 MAD</div>
-                                <div class="text-[10px] text-blue-200 mt-2 opacity-80 italic">* Total for {{ $seats ?? 6 }} seats</div>
+                                <span class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-1">Estimated Earnings</span>
+                                <div class="text-4xl font-black" id="totalEarnings">{{ ($price ?? 120) * ($seats ?? 6) }} MAD</div>
+                                <div class="text-[10px] text-blue-200 mt-2 opacity-80 italic">* Based on {{ $seats ?? 6 }} standard taxi seats</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="pt-6">
                         <button type="submit" class="w-full py-5 bg-primary text-white font-black text-lg rounded-2xl hover:bg-blue-800 transition-all shadow-xl shadow-primary/30 transform active:scale-[0.98] flex items-center justify-center gap-3">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                             PUBLISH RIDE
                         </button>
                     </div>
@@ -164,10 +162,12 @@
                 <div class="sticky top-28">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-                        <h3 class="font-bold text-gray-400 text-xs uppercase tracking-widest">Live Preview</h3>
+                        <h3 class="font-bold text-gray-400 text-xs uppercase tracking-widest">Traveler's View</h3>
                     </div>
                     
-                    <div class="bg-white rounded-3xl p-6 shadow-2xl border-2 border-primary/5">
+                    <div class="bg-white rounded-3xl p-6 shadow-2xl border-2 border-primary/5 relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-secondary/10 rounded-full blur-2xl"></div>
+
                         <div class="flex justify-between items-start mb-6">
                             <div class="flex items-center gap-3">
                                 <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-primary">
@@ -175,7 +175,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-bold text-dark">{{ auth()->user()->name }}</h3>
-                                    <div class="flex text-secondary text-[10px]">★★★★★</div>
+                                    <div class="flex text-secondary text-[10px]">★★★★★ <span class="text-gray-400 ml-1">(4.8)</span></div>
                                 </div>
                             </div>
                             <div class="text-right">
@@ -184,24 +184,35 @@
                             </div>
                         </div>
 
-                        <div class="bg-gray-50 rounded-2xl p-4 space-y-4 border border-gray-100 mb-6">
+                        <div class="bg-gray-50 rounded-2xl p-4 space-y-4 border border-gray-100">
                             <div class="relative pl-6 border-l-2 border-dashed border-primary/30 space-y-6">
                                 <div class="relative">
                                     <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-white"></div>
+                                    <div class="text-[10px] text-gray-400 font-bold uppercase">Departure</div>
                                     <div class="font-bold text-dark" id="previewFrom">---</div>
                                     <div class="text-xs text-primary font-medium" id="previewTime">--:--</div>
                                 </div>
                                 <div class="relative">
                                     <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-secondary border-4 border-white"></div>
+                                    <div class="text-[10px] text-gray-400 font-bold uppercase">Destination</div>
                                     <div class="font-bold text-dark" id="previewTo">---</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center px-2">
-                             <span class="text-xs font-bold text-gray-500 uppercase">Available</span>
-                             <span class="text-accent font-black text-xs">{{ $seats ?? 6 }} Seats</span>
+                        <div class="mt-6 flex justify-between items-center px-2">
+                             <div class="flex items-center gap-2">
+                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                 <span class="text-xs font-bold text-gray-500 uppercase">Grand Taxi</span>
+                             </div>
+                             <span class="text-accent font-black text-xs" id="previewSeats">{{ $seats ?? 6 }} Seats Available</span>
                         </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                        <p class="text-[11px] text-primary/70 leading-relaxed font-medium">
+                            <span class="font-bold">✨ Fast Publish:</span> We've preset your seats to {{ $seats ?? 6 }} and calculated the distance to save you time. 
+                        </p>
                     </div>
                 </div>
             </div>
@@ -211,31 +222,27 @@
 
 <script>
     function updatePreview() {
-        // Elements
         const fromSelect = document.getElementById('inputFrom');
         const toSelect = document.getElementById('inputTo');
-        const priceInput = document.getElementById('inputPrice');
-        const seatsInput = document.getElementById('inputSeats');
         
-        // Values
         const fromName = fromSelect.options[fromSelect.selectedIndex]?.getAttribute('data-name') || '---';
         const toName = toSelect.options[toSelect.selectedIndex]?.getAttribute('data-name') || '---';
         
         const dateTime = document.getElementById('inputDate').value;
         const time = dateTime ? new Date(dateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
         
-        const price = parseInt(priceInput.value) || 0;
-        const seats = parseInt(seatsInput.value) || 0;
+        const price = parseInt(document.getElementById('inputPrice').value) || 0;
+        const seats = parseInt(document.getElementById('inputSeats').value) || 0;
 
-        // Update UI
         document.getElementById('previewFrom').textContent = fromName;
         document.getElementById('previewTo').textContent = toName;
         document.getElementById('previewTime').textContent = time;
         document.getElementById('previewPrice').textContent = price + ' MAD';
+        document.getElementById('previewSeats').textContent = seats + ' Seats Available';
         document.getElementById('totalEarnings').textContent = (price * seats) + ' MAD';
     }
 
-    // Initialize on load to show controller defaults
+    // Initialize on load
     window.onload = updatePreview;
 </script>
 </body>

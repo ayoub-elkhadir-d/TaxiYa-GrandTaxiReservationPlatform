@@ -31,6 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('payment/{id}', [ReserveController::class, 'index'])->name('payment');
+    Route::post('payment/{id}', [ReserveController::class, 'store'])->name('payment.process');
+    
+    // Driver Ride Management
+    Route::get('/driver/rides/create', [RideController::class, 'create'])->name('rides.create');
+    Route::post('/driver/rides', [RideController::class, 'store'])->name('rides.store');
 });
 
 require __DIR__.'/auth.php';
