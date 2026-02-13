@@ -46,7 +46,7 @@ class SearchController extends Controller
                $cities = City::all();
             $result = Trip::where('departure_city_id', $DepartCityId)
                         ->where('arrival_city_id', $ArrivalCityId)
-                        //  ->whereDate('departure_date', $Date)
+                        ->whereDate('departure_date', $Date)
                         ->with(['cheffeur.taxis', 'departureCity', 'arrivalCity']) 
                         ->get();
 
