@@ -8,6 +8,8 @@ use App\Http\Controllers\ReserveController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
+
+
 // --- 1. Public Routes ---
 Route::get('/', [SearchController::class, 'index'])->name('home');
 
@@ -48,12 +50,16 @@ Route::get('/traveler/dashboard', [SearchController::class, 'search'])->middlewa
     });
 });
 
-// --- 4. Admin Routes ---
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/drivers', [AdminController::class, 'drivers'])->name('admin.drivers');
-    Route::get('/travelers', [AdminController::class, 'travelers'])->name('admin.travelers');
-    Route::get('/rides', [AdminController::class, 'rides'])->name('admin.rides');
-});
 
-require __DIR__.'/auth.php';
+Route::middleware(['auth','verified'])->name('admin.')->group(function () {
+
+    Route::get('/dashboard', [AdminController::class,'dashboard'])->name('dashboard');
+
+    Route::get('/drivers', [AdminController::class,'drivers'])->name('drivers');
+
+    Route::get('/travelers', [AdminController::class,'travelers'])->name('travelers');
+
+    Route::get('/rides', [AdminController::class,'rides'])->name('rides');
+
+});
+require __DIR__ . '/auth.php';
