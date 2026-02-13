@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\RideController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\ReserveController;
 use Illuminate\Support\Facades\Route;
 
 // --- Public Routes ---
@@ -41,7 +42,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('reservations/{id}/rate', [ReserveController::class, 'rate'])->name('reservations.rate');
 });
-
+require __DIR__.'/auth.php';
 Route::view('/dashboard', 'admin.dashboard');
 Route::view('/drivers', 'admin.drivers');
 Route::view('/travelers', 'admin.travelers');
