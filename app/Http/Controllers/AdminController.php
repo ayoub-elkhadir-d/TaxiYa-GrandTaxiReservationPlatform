@@ -68,5 +68,5 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.rides', compact('rides'));
-    }
+    } //he
 }
