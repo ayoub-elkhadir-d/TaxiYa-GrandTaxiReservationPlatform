@@ -103,7 +103,7 @@
                                     class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-secondary outline-none transition-all text-dark font-semibold bg-gray-50/50">
                                     <option value="" disabled selected>Where from?</option>
                                     @foreach($cities as $city)
-                                        <option value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
+                                        <option value="{{ $city->id }}" data-name="{{ $city->name }}" data-x="{{ $city->x }}" data-y="{{ $city->y }}">{{ $city->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -114,7 +114,7 @@
                                     class="w-full px-4 py-4 border-2 border-gray-100 rounded-2xl focus:border-secondary outline-none transition-all text-dark font-semibold bg-gray-50/50">
                                     <option value="" disabled selected>Where to?</option>
                                     @foreach($cities as $city)
-                                        <option value="{{ $city->id }}" data-name="{{ $city->name }}">{{ $city->name }}</option>
+                                        <option value="{{ $city->id }}" data-name="{{ $city->name }}" data-x="{{ $city->x }}" data-y="{{ $city->y }}">{{ $city->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -143,12 +143,26 @@
                                 <label class="text-sm font-bold text-gray-500 uppercase tracking-wider">Fixed Price per Seat</label>
                                 <div class="relative">
                                     <input type="number" name="price_per_seat" id="inputPrice" 
+<<<<<<< HEAD
                                            value="{{ $price ?? 120 }}" 
                                            readonly 
                                            class="w-full pl-6 pr-16 py-5 border-2 border-primary/10 rounded-2xl bg-gray-50 text-2xl font-black text-primary outline-none cursor-not-allowed">
                                     <div class="absolute right-6 top-5 text-primary font-black opacity-50">MAD</div>
                                 </div>
                                 <p class="text-[10px] text-gray-400 italic mt-1 font-medium">Standard price calculated based on distance and vehicle type.</p>
+=======
+                                           value="{{ old('price_per_seat', $price ?? 120) }}" 
+                                           step="0.01"
+                                           required
+                                           class="w-full pl-6 pr-16 py-5 border-2 @error('price_per_seat') border-red-500 @else border-primary/20 @enderror rounded-2xl focus:border-primary focus:bg-white transition-all text-2xl font-black text-primary bg-blue-50/30 outline-none"
+                                           oninput="updatePreview()">
+                                    <div class="absolute right-6 top-5 text-primary font-black">MAD</div>
+                                </div>
+                                @error('price_per_seat')
+                                    <p class="text-red-500 text-xs mt-1 font-bold">{{ $message }}</p>
+                                @enderror
+                                <p class="text-[10px] text-gray-400 italic mt-1 font-medium" id="priceRangeHint">Select cities to see price range.</p>
+>>>>>>> 263012571f54f803990bf177c449c2564c18cb0f
                             </div>
 
                             <div class="w-full md:w-1/2 bg-gradient-to-br from-primary to-blue-800 rounded-3xl p-6 text-white shadow-xl shadow-primary/20 flex flex-col justify-center border border-white/10">
@@ -234,27 +248,70 @@
     function updatePreview() {
         const fromSelect = document.getElementById('inputFrom');
         const toSelect = document.getElementById('inputTo');
+<<<<<<< HEAD
         
         const fromName = fromSelect.options[fromSelect.selectedIndex]?.getAttribute('data-name') || '---';
         const toName = toSelect.options[toSelect.selectedIndex]?.getAttribute('data-name') || '---';
+=======
+        const priceInput = document.getElementById('inputPrice');
+        const priceRangeHint = document.getElementById('priceRangeHint');
+        
+        // Values
+        const fromOption = fromSelect.options[fromSelect.selectedIndex];
+        const toOption = toSelect.options[toSelect.selectedIndex];
+        
+        const fromName = fromOption?.getAttribute('data-name') || '---';
+        const toName = toOption?.getAttribute('data-name') || '---';
+        
+        const fromX = parseFloat(fromOption?.getAttribute('data-x'));
+        const fromY = parseFloat(fromOption?.getAttribute('data-y'));
+        const toX = parseFloat(toOption?.getAttribute('data-x'));
+        const toY = parseFloat(toOption?.getAttribute('data-y'));
+
+        if (!isNaN(fromX) && !isNaN(fromY) && !isNaN(toX) && !isNaN(toY)) {
+            const deltaX = toX - fromX;
+            const deltaY = toY - fromY;
+            const distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) * 100;
+            
+            const minPrice = (distance * 0.4).toFixed(2);
+            const maxPrice = (distance * 2).toFixed(2);
+            
+            priceInput.min = minPrice;
+            priceInput.max = maxPrice;
+            priceRangeHint.innerHTML = `Allowed range: <span class="text-primary font-bold">${minPrice} - ${maxPrice} MAD</span>`;
+        } else {
+            priceRangeHint.textContent = "Select both cities to see the allowed price range.";
+        }
+>>>>>>> 263012571f54f803990bf177c449c2564c18cb0f
         
         const dateTime = document.getElementById('inputDate').value;
         const time = dateTime ? new Date(dateTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '--:--';
         
 <<<<<<< HEAD
+<<<<<<< HEAD
         const price = parseInt(document.getElementById('inputPrice').value) || 0;
         const seats = parseInt(document.getElementById('inputSeats').value) || 0;
 =======
         const price = parseInt(priceInput.value) || 0;
+=======
+        const price = parseFloat(priceInput.value) || 0;
+>>>>>>> 263012571f54f803990bf177c449c2564c18cb0f
         const seats = 6;
 >>>>>>> 538bf55dc094c8807c56ebcd319fbe7df1832ab8
 
         document.getElementById('previewFrom').textContent = fromName;
         document.getElementById('previewTo').textContent = toName;
         document.getElementById('previewTime').textContent = time;
+<<<<<<< HEAD
         document.getElementById('previewPrice').textContent = price + ' MAD';
         document.getElementById('previewSeats').textContent = seats + ' Seats Available';
         document.getElementById('totalEarnings').textContent = (price * seats) + ' MAD';
+=======
+        document.getElementById('previewPrice').textContent = price.toFixed(2) + ' MAD';
+        document.getElementById('totalEarnings').textContent = (price * seats).toFixed(2) + ' MAD';
+        document.getElementById('previewSeatsCount').textContent = seats;
+        document.getElementById('previewSeatsText').textContent = seats;
+>>>>>>> 263012571f54f803990bf177c449c2564c18cb0f
     }
 
     // Initialize on load
