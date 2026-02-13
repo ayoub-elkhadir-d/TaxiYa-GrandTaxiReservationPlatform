@@ -43,6 +43,20 @@ class RideController extends Controller
             'available_seats' => 'required|integer|min:1|max:8',
         ]);
 
+        $departureCity = City::find($validated['departure_city_id']);
+        $arrivalCity = City::find($validated['arrival_city_id']);
+
+        $deltaX = $arrivalCity->x - $departureCity->x;
+        $deltaY = $arrivalCity->y - $departureCity->y;
+        $distance = sqrt(pow($deltaX, 2) + pow($deltaY, 2)) * 100;
+
+        $minPrice = $distance * 0.4;
+        $maxPrice = $distance * 2;
+
+        if ($validated['price_per_seat'] < $minPrice || $validated['price_per_seat'] > $maxPrice) {
+            return back()->withErrors(['price_per_seat' => "The price must be between " . number_format($minPrice, 2) . " and " . number_format($maxPrice, 2) . " MAD based on the distance ($distance km)."])->withInput();
+        }
+
         Trip::create([
             'cheffeur_id' => $driver->id,
             'departure_city_id' => $validated['departure_city_id'],
@@ -54,5 +68,19 @@ class RideController extends Controller
         ]);
 
         return redirect()->route('driver.dashboard')->with('success', 'Your ride has been published successfully!');
+    }
+
+    /**
+     * Cancel a ride.
+     */
+    public function cancel($id)
+    {
+        $trip = Trip::where('id', $id)
+                    ->where('cheffeur_id', Auth::id())
+                    ->firstOrFail();
+
+        $trip->update(['status' => 'canceled']);
+
+        return redirect()->route('driver.dashboard')->with('success', 'Your ride has been canceled.');
     }
 }

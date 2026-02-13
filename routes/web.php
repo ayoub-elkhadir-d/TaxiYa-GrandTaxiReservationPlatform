@@ -10,11 +10,11 @@ use \App\Http\Controllers\ReserveController;
 
 Route::get('/', [SearchController::class, 'index'])->name('home');
 
-Route::post('/search', [SearchController::class, 'search'])->name('search');
-
-Route::get('/search', [SearchController::class, 'showSearchPage'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+Route::post('/search', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('search', $request->all());
+});
+Route::get('/traveler/dashboard', [SearchController::class, 'search'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/driver/dashboard', [DriverController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     // Driver Ride Management
     Route::get('/driver/rides/create', [RideController::class, 'create'])->name('rides.create');
     Route::post('/driver/rides', [RideController::class, 'store'])->name('rides.store');
+    Route::post('/driver/rides/{id}/cancel', [RideController::class, 'cancel'])->name('rides.cancel');
 
     Route::post('reservations/{id}/rate', [ReserveController::class, 'rate'])->name('reservations.rate');
 });

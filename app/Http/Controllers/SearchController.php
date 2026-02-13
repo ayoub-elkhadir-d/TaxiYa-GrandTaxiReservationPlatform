@@ -57,6 +57,12 @@ class SearchController extends Controller
 
             return view('traveler.search', compact('result', 'cities'));
 
+        // If no basic filters are provided, we might want to return an empty result or all trips
+        if (!$request->filled('from') && !$request->filled('to')) {
+            $result = collect();
         }
+
+        return view('traveler.search', compact('result', 'cities'));
+    }
 
 }
