@@ -22,7 +22,7 @@ Route::post('/search', function (\Illuminate\Http\Request $request) {
 
 // --- 2. Authenticated Routes (Travelers & General) ---
 Route::middleware(['auth', 'verified'])->group(function () {
-    
+
     // Dashboards
 Route::get('/traveler/dashboard', [SearchController::class, 'search'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -60,6 +60,7 @@ Route::middleware(['auth','verified'])->name('admin.')->group(function () {
     Route::get('/travelers', [AdminController::class,'travelers'])->name('travelers');
 
     Route::get('/rides', [AdminController::class,'rides'])->name('rides');
+    Route::get('/rides/{id}', [AdminController::class,'reservations'])->name('reservations');
 
 });
 require __DIR__ . '/auth.php';

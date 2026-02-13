@@ -15,23 +15,23 @@ class AdminController extends Controller
 
     public function dashboard()
     {
-    //   
+    //
     }
 
 
     public function drivers()
     {
         $drivers = User::where('role', 'cheffeur')
-            ->withCount('trips') 
+            ->withCount('trips')
             ->with('Taxis')
             ->latest()
             ->get()
             ->map(function ($driver) {
 
-              
+
                 $tripIds = Trip::where('cheffeur_id', $driver->id)->pluck('id');
 
-              
+
                 $driver->earnings = Reservation::whereIn('trip_id', $tripIds)
                     ->where('status', 'confirmed')
                     ->sum('total_price');
@@ -50,7 +50,7 @@ class AdminController extends Controller
     public function travelers()
     {
      $travelers = User::where('role', 'voyageur')
-                         ->withCount('voyageurTrips') 
+                         ->withCount('voyageurTrips')
                          ->orderBy('created_at', 'desc')
                          ->get();
 
@@ -61,12 +61,21 @@ class AdminController extends Controller
     public function rides()
     {
         $rides = Trip::with(['cheffeur', 'departureCity', 'arrivalCity'])
-            ->withSum(['reservations' => function ($query) {
+            ->withSum(['reservations as booked_seats' => function ($query) {
                 $query->where('status', 'confirmed');
             }], 'seat')
             ->orderBy('departure_date', 'desc')
             ->get();
 
         return view('admin.rides', compact('rides'));
-    } //he
+    }
+
+    public function reservations($id)
+    {
+        $reservations = Reservation::with(['user', 'trip.departureCity', 'trip.arrivalCity'])
+            ->where('trip_id', $id)
+            ->get();
+
+        return view('admin.reservations', compact('reservations'));
+    }
 }
